@@ -7,7 +7,7 @@ import Axios from 'axios'
 import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
-const SigningKeyNotFoundError = require('./error')
+
 const logger = createLogger('auth')
 let cachedCertificate: string
 
@@ -90,7 +90,7 @@ async function getCertificate(kid: string): Promise<string> {
     const key = jwks.data.keys.find((k: { kid: string }) => k.kid === kid)
   
     if (!key) {
-      throw new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`)}
+      throw new Error(`Unable to find a signing key that matches '${kid}'`)}
     
     let certificate = `-----BEGIN CERTIFICATE-----\n${key.x5c[0]}\n-----END CERTIFICATE-----`
     cachedCertificate = certificate
