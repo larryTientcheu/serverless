@@ -3,7 +3,7 @@ import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { createLogger } from '../utils/logger'
 import { TodoItem } from '../models/TodoItem'
-import { TodoUpdate } from '../models/TodoUpdate';
+// import { TodoUpdate } from '../models/TodoUpdate';
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
@@ -15,7 +15,7 @@ export class TodosAcess {
 
     constructor(
         
-        private readonly s3Bucket = process.env.ATTACHMENT_S3_Bucket,
+        // private readonly s3 = process.env.ATTACHMENT_S3,
         private readonly todosTable = process.env.TODOS_TABLE,
         private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient()
 
@@ -25,10 +25,13 @@ export class TodosAcess {
         logger.info('Getting Todo\'s')
 
         let params = {
-            Tablename: this.todosTable,
-            KeyConditionExpression: "userId = :userId",
-            ExpressionAttributeValues: {":userId": userId}
+            TableName: this.todosTable,
+            KeyConditionExpression: 'userId = :userId',
+            ExpressionAttributeValues: {':userId': userId}
         }
+        const items = (await this.docClient.query(params).promise()).Items;
+        logger.info(`User ${userId} has ${items.length} items`)
+        return items as TodoItem[]
     }
 
 }
