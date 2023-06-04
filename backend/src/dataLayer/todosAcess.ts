@@ -35,4 +35,8 @@ export class TodosAccess {
         return items as TodoItem[]
     }
 
+    async createTodo(todo: TodoItem): Promise<TodoItem>{
+        logger.info(`Creating todo item: ${todo.todoId}`)
+    }
+
 }
