@@ -2,7 +2,7 @@ import { TodosAccess } from '../dataLayer/todosAcess'
 // import { AttachmentUtils } from '../dataLayer/attachmentUtils';
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
-// import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 // import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 // import * as createError from 'http-errors'
@@ -23,4 +23,8 @@ export async function createTodo(userId: string, todo: CreateTodoRequest): Promi
     return await todosAccess.createTodo({
         userId, todoId, createdAt, done, ...todo
     })    
+}
+
+export async function updateTodo(userId: string, todoId: string, todoUpdate: UpdateTodoRequest) {
+    await todosAccess.updateTodo(userId, todoId, todoUpdate)
 }
