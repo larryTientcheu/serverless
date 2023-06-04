@@ -30,7 +30,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3: serverless-c4-todo-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -189,14 +189,42 @@ resources:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
 
-    # # TODO: Complete the bucket properties below. 
-    # # Do not forget to add the CorsConfiguration propoerty
-    # AttachmentsBucket:
-    #   Type: AWS::S3::Bucket
-    #   Properties:
+    # TODO: Complete the bucket properties below. 
+    # Do not forget to add the CorsConfiguration propoerty
+    AttachmentsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedOrigins:
+                - "*"
+              AllowedMethods:
+                - GET
+                - POST
+                - PUT
+                - HEAD
+                - DELETE
+              MaxAge: 3000
 
-    # # TODO: Complete the policy below and attach it to the bucket defined above
-    # # For cross referencing the name of the bucket, use "!Ref AttachmentsBucket"
-    # BucketPolicy:
-    #   Type: AWS::S3::BucketPolicy
-    #   Properties:
+    # TODO: Complete the policy below and attach it to the bucket defined above
+    # For cross referencing the name of the bucket, use "!Ref AttachmentsBucket"
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref AttachmentsBucket
+        PolicyDocument:
+          Id: S3AttachmentBucketPolicy
+          Statement:
+              - Effect: Allow
+                Action: 
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Join
+                    - ''
+                    - - 'arn:aws:s3:::'
+                      - ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+                      - /*
+                Principal: "*"
