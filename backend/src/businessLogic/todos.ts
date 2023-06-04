@@ -14,7 +14,7 @@ export async function getTodosForUser(userId:string): Promise<TodoItem[]> {
     return await todosAccess.getTodosForUser(userId)
 }
 
-export async function createTodo(userId: string, todo: CreateTodoRequest): Promise<TodoItem>{
+export async function createTodo(userId:string, todo: CreateTodoRequest): Promise<TodoItem>{
     
     const todoId = uuid.v4()
     const createdAt = new Date().toISOString()
@@ -25,6 +25,10 @@ export async function createTodo(userId: string, todo: CreateTodoRequest): Promi
     })    
 }
 
-export async function updateTodo(userId: string, todoId: string, todoUpdate: UpdateTodoRequest) {
+export async function updateTodo(userId:string, todoId:string, todoUpdate: UpdateTodoRequest) {
     await todosAccess.updateTodo(userId, todoId, todoUpdate)
+}
+
+export async function deleteTodo(userId:string, todoId:string) {
+    await todosAccess.deleteTodo(userId, todoId)
 }
