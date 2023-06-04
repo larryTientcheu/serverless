@@ -1,14 +1,13 @@
 import { TodosAccess } from '../dataLayer/todosAcess'
-// import { AttachmentUtils } from '../dataLayer/attachmentUtils';
+import { AttachmentUtils } from '../dataLayer/attachmentUtils';
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
-// import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
-// import * as createError from 'http-errors'
 
 // TODO: Implement businessLogic
 const todosAccess = new TodosAccess()
+const attachmentUtils = new AttachmentUtils();
 
 export async function getTodosForUser(userId:string): Promise<TodoItem[]> {
     return await todosAccess.getTodosForUser(userId)
@@ -31,4 +30,14 @@ export async function updateTodo(userId:string, todoId:string, todoUpdate: Updat
 
 export async function deleteTodo(userId:string, todoId:string) {
     await todosAccess.deleteTodo(userId, todoId)
+}
+
+export async function generateUploadUrl(attachmentId:string): Promise<string>{
+    return await attachmentUtils.generateUploadUrl(attachmentId)
+}
+
+export async function updateAttachmentUrl(attachmentId:string, userId:string, todoId:string){
+    const attachmentUrl = await attachmentUtils.getAttachmentUrl(attachmentId)
+    await todosAccess.updateAttachmentUrl(attachmentUrl, userId, todoId)
+    
 }

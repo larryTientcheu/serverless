@@ -22,7 +22,7 @@ export class TodosAccess {
 
     ){}
 
-    async getTodosForUser(userId: string): Promise<TodoItem[]>{
+    async getTodosForUser(userId:string): Promise<TodoItem[]>{
         logger.info('Getting Todo\'s')
 
         let params = {
@@ -46,7 +46,7 @@ export class TodosAccess {
         return todo as TodoItem
     }
 
-    async updateTodo(userId: string, todoId: string, todoUpdate: TodoUpdate){
+    async updateTodo(userId:string, todoId:string, todoUpdate: TodoUpdate){
         logger.info(`Updating todo item ${todoId}`)
 
         // Only the current user can update his todo items
@@ -72,7 +72,7 @@ export class TodosAccess {
         logger.info(`Todo item ${todoId} has been updated`)
     }
 
-    async deleteTodo(userId: string, todoId: string){
+    async deleteTodo(userId:string, todoId:string){
         logger.info(`Deleting todo item ${todoId}`)
 
         // Only the current user can delete his todo items
@@ -84,7 +84,29 @@ export class TodosAccess {
             }
         }
         await this.docClient.delete(params).promise();
+        logger.info(`Todo item ${todoId} has been deleted`)
 
     }
 
+    async updateAttachmentUrl(attachmentUrl:string, userId:string, todoId:string){
+        logger.info(`Updating the attachment url for todo item ${todoId}`)
+
+        let params = {
+            TableName: this.todosTable,
+            Key: {
+                'userId': userId,
+                'todoId': todoId
+            },
+            UpdateExpression: 'set #attachmentUrl = :attachmentUrl',
+            ExpressionAttributeNames: {
+                '#attachmentUrl': 'attachmentUrl'
+            },
+            ExpressionAttributeValues:{
+                ':attachmentUrl': attachmentUrl
+            }
+        }
+
+        await this.docClient.update(params).promise();
+        logger.info(`Upload Url for Todo item ${todoId} has been updated`)
+    }
 }
