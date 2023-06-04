@@ -37,6 +37,13 @@ export class TodosAccess {
 
     async createTodo(todo: TodoItem): Promise<TodoItem>{
         logger.info(`Creating todo item: ${todo.todoId}`)
+
+        let params = {
+            TableName: this.todosTable,
+            Item: todo
+        }
+        await this.docClient.put(params).promise();
+        return todo
     }
 
 }
