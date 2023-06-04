@@ -72,8 +72,19 @@ export class TodosAccess {
         logger.info(`Todo item ${todoId} has been updated`)
     }
 
-    // async deleteTodo(userId: string, todoId: string){
+    async deleteTodo(userId: string, todoId: string){
+        logger.info(`Deleting todo item ${todoId}`)
 
-    // }
+        // Only the current user can delete his todo items
+        let params = {
+            TableName: this.todosTable,
+            Key: {
+                userId,
+                todoId
+            }
+        }
+        await this.docClient.delete(params).promise();
+
+    }
 
 }
