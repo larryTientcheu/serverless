@@ -9,8 +9,8 @@ plugins:
   - serverless-reqvalidator-plugin
   - serverless-plugin-tracing
 
-package: 
-  individually: true
+# package: 
+#   individually: true
   
 
 provider:
@@ -30,7 +30,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -195,6 +195,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          RestrictPublicBuckets: false
         CorsConfiguration:
           CorsRules:
             - AllowedHeaders:
@@ -214,17 +219,16 @@ resources:
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
-        Bucket: !Ref AttachmentsBucket
         PolicyDocument:
-          Id: S3AttachmentBucketPolicy
+          Id: MyPolicy
+          Version: "2012-10-17"
           Statement:
-              - Effect: Allow
-                Action: 
-                  - s3:GetObject
-                  - s3:PutObject
-                Resource: !Join
-                    - ''
-                    - - 'arn:aws:s3:::'
-                      - ${self:provider.environment.ATTACHMENT_S3_BUCKET}
-                      - /*
-                Principal: "*"
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 
+                - s3:GetObject
+                - s3:PutObject
+              Resource: 'arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*'
+        Bucket: !Ref AttachmentsBucket
+        
