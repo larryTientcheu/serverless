@@ -15,7 +15,7 @@ export class AttachmentUtils{
     ){}
 
     async generateUploadUrl(attachmentId:string): Promise<string>{
-        logger.info(`Generating the upload url for todo item ${attachmentId}`)
+        logger.info(`Generating the signed url for attachment ${attachmentId}`)
         const params = {
             Bucket: this.bucketName,
             Key: attachmentId,
