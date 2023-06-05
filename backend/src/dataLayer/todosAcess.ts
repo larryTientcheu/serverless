@@ -88,7 +88,7 @@ export class TodosAccess {
 
     }
 
-    async updateAttachmentUrl(uploadUrl:string, userId:string, todoId:string){
+    async updateAttachmentUrl(attachmentUrl:string, userId:string, todoId:string){
         logger.info(`Updating the attachment url for todo item ${todoId}`)
 
         let params = {
@@ -97,12 +97,12 @@ export class TodosAccess {
                 'userId': userId,
                 'todoId': todoId
             },
-            UpdateExpression: 'set #uploadUrl = :uploadUrl',
+            UpdateExpression: 'set #attachmentUrl = :attachmentUrl',
             ExpressionAttributeNames: {
-                '#uploadUrl': 'uploadUrl'
+                '#attachmentUrl': 'attachmentUrl'
             },
             ExpressionAttributeValues:{
-                ':uploadUrl': uploadUrl
+                ':attachmentUrl': attachmentUrl
             }
         }
 
